@@ -37,9 +37,11 @@ class NewsFeedViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsFeedTableViewCell", for: indexPath) as? NewsFeedTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsFeedTableViewCell", for: indexPath) as? NewsFeedTableViewCell,
+              let article = articles[safe: indexPath.row] else {
             return UITableViewCell()
         }
+        cell.configure(title: article.title, url: article.urlToImage != nil ? URL(string: article.urlToImage!) : nil)
         cell.titleLabel.text = articles[indexPath.row].title
         return cell
     }
