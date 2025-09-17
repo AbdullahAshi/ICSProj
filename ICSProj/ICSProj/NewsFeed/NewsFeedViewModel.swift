@@ -8,10 +8,14 @@
 import Foundation
 
 class NewsFeedViewModel {
-    private let service = NewsFeedService()
+    private let newsFeedService: NewsFeedServiceProtocol
+    
+    init(newsFeedService: NewsFeedServiceProtocol = NewsFeedService()){
+        self.newsFeedService = newsFeedService
+    }
     
     func getArticles(completion: @escaping (Result<[Article], Error>) -> Void) {
-        service.getNewsFeed { result in
+        newsFeedService.getNewsFeed { result in
             switch result {
             case .success(let newsFeed):
                 completion(.success(newsFeed?.articles ?? []))

@@ -28,6 +28,24 @@ struct Article: Codable {
         case source, author, title, description, url, urlToImage, publishedAt, content
     }
     
+    init(source: Source,
+         author: String? = nil,
+         title: String,
+         description: String,
+         url: String,
+         urlToImage: String? = nil,
+         publishedAt: Date,
+         content: String) {
+            self.source = source
+            self.author = author
+            self.title = title
+            self.description = description
+            self.url = url
+            self.urlToImage = urlToImage
+            self.publishedAt = publishedAt
+            self.content = content
+        }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         source = try container.decode(Source.self, forKey: .source)

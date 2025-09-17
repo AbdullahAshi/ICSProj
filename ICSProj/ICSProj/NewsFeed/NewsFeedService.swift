@@ -7,7 +7,11 @@
 
 import Foundation
 
-class NewsFeedService {
+protocol NewsFeedServiceProtocol {
+    func getNewsFeed(completion: @escaping (Result<NewsFeed?, Error>) -> Void) -> URLSessionDataTaskProtocol?
+}
+
+class NewsFeedService: NewsFeedServiceProtocol  {
     private let networkService: NetworkServiceProtocol
     
     init(networkService: NetworkServiceProtocol = NetworkService.shared) {
