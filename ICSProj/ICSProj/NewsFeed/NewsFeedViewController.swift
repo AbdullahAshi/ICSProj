@@ -10,6 +10,8 @@ import UIKit
 class NewsFeedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private let viewModel = NewsFeedViewModel()
     private var articles: [Article] = []
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let refreshControl = UIRefreshControl()
     
     @IBOutlet private weak var tableView: UITableView!
     
@@ -20,8 +22,31 @@ class NewsFeedViewController: UIViewController, UITableViewDataSource, UITableVi
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
         
+        // Setup activity indicator
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        
+        // Setup refresh control
+        refreshControl.addTarget(self, action: #selector(refreshPulled), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        
+        fetchArticles()
+    }
+    
+    @objc private func refreshPulled() {
+        fetchArticles()
+    }
+    
+    private func fetchArticles() {
+        activityIndicator.startAnimating()
         viewModel.getArticles { [weak self] result in
             DispatchQueue.main.async {
+                self?.activityIndicator.stopAnimating()
+                self?.refreshControl.endRefreshing()
                 switch result {
                 case .success(let articles):
                     self?.articles = articles
