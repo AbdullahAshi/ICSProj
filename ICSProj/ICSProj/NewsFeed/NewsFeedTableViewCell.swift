@@ -9,6 +9,7 @@ import UIKit
 
 class NewsFeedTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var sourceNameLabel: UILabel!
     @IBOutlet weak var articleImage: UIImageView!
     
     private var fetchTask: URLSessionTask? {
@@ -17,8 +18,9 @@ class NewsFeedTableViewCell: UITableViewCell {
         }
     }
     
-    func configure(title: String, url: URL?) {
+    func configure(title: String, sourceName: String, url: URL?) {
         self.titleLabel.text = title
+        self.sourceNameLabel.text = sourceName
         if let url = url {
             self.fetchTask = CachedRequest.request(url: url) { [weak self] data, isCached in
                 guard let self = self,
@@ -42,6 +44,7 @@ class NewsFeedTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         self.titleLabel.text = nil
+        self.sourceNameLabel.text = nil
         self.articleImage.image = nil
     }
 }
