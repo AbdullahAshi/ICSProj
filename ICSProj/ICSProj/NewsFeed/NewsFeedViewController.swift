@@ -72,7 +72,12 @@ class NewsFeedViewController: UIViewController, UITableViewDataSource, UITableVi
             return UITableViewCell()
         }
         let article = articles[indexPath.row]
-        cell.configure(title: article.title, sourceName: article.source.name, url: article.urlToImage != nil ? URL(string: article.urlToImage!) : nil)
+        if let url = article.urlToImage,
+           !url.isEmpty {
+            cell.configure(title: article.title, sourceName: article.source.name, url: URL(string: url))
+        } else {
+            cell.configure(title: article.title, sourceName: article.source.name, url: nil)
+        }
         return cell
     }
     

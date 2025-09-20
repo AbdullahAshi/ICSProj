@@ -20,12 +20,14 @@ class NewsFeedTableViewCellProg: UITableViewCell {
     private let sourceNameLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
+        label.numberOfLines = 0 // Allow multi-line
         return label
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
+        label.numberOfLines = 0 // Allow multi-line
         return label
     }()
     
@@ -34,7 +36,7 @@ class NewsFeedTableViewCellProg: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 4
-        stackView.alignment = .leading
+        stackView.alignment = .fill // Use fill for dynamic sizing
         return stackView
     }()
     
@@ -43,7 +45,7 @@ class NewsFeedTableViewCellProg: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.spacing = 4
-        stackView.alignment = .leading
+        stackView.alignment = .fill // Use fill for dynamic sizing
         return stackView
     }()
     
@@ -67,9 +69,19 @@ class NewsFeedTableViewCellProg: UITableViewCell {
         self.sourceNameLabel.text = sourceName
         if let url = url {
             self.fetchTask = CachedRequest.request(url: url) { [weak self] data, isCached in
-                guard let self = self,
-                      let data = data,
-                      let img = UIImage(data: data) else { return }
+                guard let self = self else {
+                    return
+                }
+                
+                guard let data = data,
+                      let img = UIImage(data: data) else {
+                    DispatchQueue.main.async {
+                        UIView.transition(with: self, duration: 1, options: .transitionCrossDissolve, animations: {
+                            self.articleImage.image = UIImage(systemName: "heart.fill")
+                        })
+                    }
+                    return
+                }
                 
                 DispatchQueue.main.async {
                     if isCached {
@@ -83,6 +95,12 @@ class NewsFeedTableViewCellProg: UITableViewCell {
                     }
                 }
             }
+        } else {
+            DispatchQueue.main.async {
+                UIView.transition(with: self, duration: 1, options: .transitionCrossDissolve, animations: {
+                    self.articleImage.image = UIImage(systemName: "heart.fill")
+                })
+            }
         }
     }
     
@@ -93,14 +111,13 @@ class NewsFeedTableViewCellProg: UITableViewCell {
     }
     
     
-    
     private func setupUI() {
+        // Use addArrangedSubview for stack views
+        titleStackView.addArrangedSubview(articleImage)
+        titleStackView.addArrangedSubview(sourceNameLabel)
         
-        titleStackView.addSubview(articleImage)
-        titleStackView.addSubview(sourceNameLabel)
-        
-        mainStackView.addSubview(titleStackView)
-        mainStackView.addSubview(titleLabel)
+        mainStackView.addArrangedSubview(titleStackView)
+        mainStackView.addArrangedSubview(titleLabel)
         
         self.contentView.addSubview(mainStackView)
         
