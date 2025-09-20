@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NewsFeedTableViewCellProg: UITableViewCell {
+class NewsFeedTableViewCellProg: UITableViewCell, NewsFeedTableViewCellProtocol {
     static let identifier = "NewsFeedTableViewCellProg"
     
     private let articleImage : UIImageView = {

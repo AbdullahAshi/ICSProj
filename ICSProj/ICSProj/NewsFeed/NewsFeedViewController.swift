@@ -8,20 +8,29 @@
 import UIKit
 
 class NewsFeedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    private enum CellType {
+        case storyBoard
+        case programmatically
+    }
+    
     private let viewModel = NewsFeedViewModel()
     private var articles: [Article] = []
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let refreshControl = UIRefreshControl()
+    
+    private let cellType: CellType = .storyBoard
     
     @IBOutlet private weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //let nib = UINib(nibName: NewsFeedTableViewCellProg.identifier, bundle: nil)
-        //tableView.register(nib, forCellReuseIdentifier: NewsFeedTableViewCellProg.identifier)
-        
-        tableView.register(NewsFeedTableViewCellProg.self, forCellReuseIdentifier: NewsFeedTableViewCellProg.identifier)
+        if cellType == .storyBoard {
+            let nib = UINib(nibName: NewsFeedTableViewCell.identifier, bundle: nil)
+            tableView.register(nib, forCellReuseIdentifier: NewsFeedTableViewCell.identifier)
+        } else {
+            tableView.register(NewsFeedTableViewCellProg.self, forCellReuseIdentifier: NewsFeedTableViewCellProg.identifier)
+        }
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
@@ -68,9 +77,19 @@ class NewsFeedViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: NewsFeedTableViewCellProg.identifier, for: indexPath) as? NewsFeedTableViewCellProg else {
+        let cell: NewsFeedTableViewCellProtocol?
+        
+        if cellType == .storyBoard {
+            cell = tableView.dequeueReusableCell(withIdentifier: NewsFeedTableViewCell.identifier, for: indexPath) as? NewsFeedTableViewCell
+        } else {
+            cell = tableView.dequeueReusableCell(withIdentifier: NewsFeedTableViewCellProg.identifier, for: indexPath) as? NewsFeedTableViewCellProg
+        }
+        
+        guard let cell = cell else {
             return UITableViewCell()
         }
+        
+        
         let article = articles[indexPath.row]
         if let url = article.urlToImage,
            !url.isEmpty {
