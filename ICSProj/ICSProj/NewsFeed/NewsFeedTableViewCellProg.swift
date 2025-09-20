@@ -20,7 +20,6 @@ class NewsFeedTableViewCellProg: UITableViewCell {
     private let sourceNameLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
-        label.numberOfLines = 0 // Allow multi-line
         return label
     }()
     
