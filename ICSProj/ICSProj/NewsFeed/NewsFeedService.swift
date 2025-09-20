@@ -8,6 +8,7 @@
 import Foundation
 
 protocol NewsFeedServiceProtocol {
+    @discardableResult
     func getNewsFeed(completion: @escaping (Result<NewsFeed?, Error>) -> Void) -> URLSessionDataTaskProtocol?
 }
 

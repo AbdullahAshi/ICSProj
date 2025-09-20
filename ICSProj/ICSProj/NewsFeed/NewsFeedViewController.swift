@@ -17,8 +17,12 @@ class NewsFeedViewController: UIViewController, UITableViewDataSource, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let nib = UINib(nibName: "NewsFeedTableViewCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "NewsFeedTableViewCell")
+        
+        //let nib = UINib(nibName: NewsFeedTableViewCellProg.identifier, bundle: nil)
+        //tableView.register(nib, forCellReuseIdentifier: NewsFeedTableViewCellProg.identifier)
+        
+        tableView.register(NewsFeedTableViewCellProg.self, forCellReuseIdentifier: NewsFeedTableViewCellProg.identifier)
+        
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
         
@@ -64,7 +68,7 @@ class NewsFeedViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsFeedTableViewCell", for: indexPath) as? NewsFeedTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: NewsFeedTableViewCellProg.identifier, for: indexPath) as? NewsFeedTableViewCellProg else {
             return UITableViewCell()
         }
         let article = articles[indexPath.row]
