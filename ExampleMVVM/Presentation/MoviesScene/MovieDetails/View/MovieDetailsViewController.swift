@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 final class MovieDetailsViewController: UIViewController, StoryboardInstantiable {
 
@@ -8,6 +9,7 @@ final class MovieDetailsViewController: UIViewController, StoryboardInstantiable
     // MARK: - Lifecycle
 
     private var viewModel: MovieDetailsViewModel!
+    private var cancellables = Set<AnyCancellable>()
     
     static func create(with viewModel: MovieDetailsViewModel) -> MovieDetailsViewController {
         let view = MovieDetailsViewController.instantiateViewController()
@@ -22,7 +24,10 @@ final class MovieDetailsViewController: UIViewController, StoryboardInstantiable
     }
 
     private func bind(to viewModel: MovieDetailsViewModel) {
-        viewModel.posterImage.observe(on: self) { [weak self] in self?.posterImageView.image = $0.flatMap(UIImage.init) }
+        viewModel.posterImage
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.posterImageView.image = $0.flatMap(UIImage.init) }
+            .store(in: &cancellables)
     }
     
     override func viewDidLayoutSubviews() {

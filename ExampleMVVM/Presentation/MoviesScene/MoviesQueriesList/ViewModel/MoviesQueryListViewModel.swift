@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 typealias MoviesQueryListViewModelDidSelectAction = (MovieQuery) -> Void
 
@@ -8,7 +9,7 @@ protocol MoviesQueryListViewModelInput {
 }
 
 protocol MoviesQueryListViewModelOutput {
-    var items: Observable<[MoviesQueryListItemViewModel]> { get }
+    var items: AnyPublisher<[MoviesQueryListItemViewModel], Never> { get }
 }
 
 protocol MoviesQueryListViewModel: MoviesQueryListViewModelInput, MoviesQueryListViewModelOutput { }
@@ -26,7 +27,8 @@ final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
     private let mainQueue: DispatchQueueType
     
     // MARK: - OUTPUT
-    let items: Observable<[MoviesQueryListItemViewModel]> = Observable([])
+    private let itemsSubject = CurrentValueSubject<[MoviesQueryListItemViewModel], Never>([])
+    var items: AnyPublisher<[MoviesQueryListItemViewModel], Never> { itemsSubject.eraseToAnyPublisher() }
     
     init(
         numberOfQueriesToShow: Int,
@@ -46,9 +48,9 @@ final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
             self?.mainQueue.async {
                 switch result {
                 case .success(let items):
-                    self?.items.value = items
+                    self?.itemsSubject.send(items
                         .map { $0.query }
-                        .map(MoviesQueryListItemViewModel.init)
+                        .map(MoviesQueryListItemViewModel.init))
                 case .failure:
                     break
                 }

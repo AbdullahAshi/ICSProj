@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 final class MoviesListViewController: UIViewController, StoryboardInstantiable, Alertable {
     
@@ -13,6 +14,7 @@ final class MoviesListViewController: UIViewController, StoryboardInstantiable, 
 
     private var moviesTableViewController: MoviesListTableViewController?
     private var searchController = UISearchController(searchResultsController: nil)
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Lifecycle
 
@@ -35,10 +37,25 @@ final class MoviesListViewController: UIViewController, StoryboardInstantiable, 
     }
 
     private func bind(to viewModel: MoviesListViewModel) {
-        viewModel.items.observe(on: self) { [weak self] _ in self?.updateItems() }
-        viewModel.loading.observe(on: self) { [weak self] in self?.updateLoading($0) }
-        viewModel.query.observe(on: self) { [weak self] in self?.updateSearchQuery($0) }
-        viewModel.error.observe(on: self) { [weak self] in self?.showError($0) }
+        viewModel.items
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.updateItems() }
+            .store(in: &cancellables)
+        
+        viewModel.loading
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.updateLoading($0) }
+            .store(in: &cancellables)
+        
+        viewModel.query
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.updateSearchQuery($0) }
+            .store(in: &cancellables)
+        
+        viewModel.error
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.showError($0) }
+            .store(in: &cancellables)
     }
 
     override func viewWillDisappear(_ animated: Bool) {

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 protocol MovieDetailsViewModelInput {
     func updatePosterImage(width: Int)
@@ -6,7 +7,7 @@ protocol MovieDetailsViewModelInput {
 
 protocol MovieDetailsViewModelOutput {
     var title: String { get }
-    var posterImage: Observable<Data?> { get }
+    var posterImage: AnyPublisher<Data?, Never> { get }
     var isPosterImageHidden: Bool { get }
     var overview: String { get }
 }
@@ -22,7 +23,8 @@ final class DefaultMovieDetailsViewModel: MovieDetailsViewModel {
 
     // MARK: - OUTPUT
     let title: String
-    let posterImage: Observable<Data?> = Observable(nil)
+    private let posterImageSubject = CurrentValueSubject<Data?, Never>(nil)
+    var posterImage: AnyPublisher<Data?, Never> { posterImageSubject.eraseToAnyPublisher() }
     let isPosterImageHidden: Bool
     let overview: String
     
@@ -54,7 +56,7 @@ extension DefaultMovieDetailsViewModel {
                 guard self?.posterImagePath == posterImagePath else { return }
                 switch result {
                 case .success(let data):
-                    self?.posterImage.value = data
+                    self?.posterImageSubject.send(data)
                 case .failure: break
                 }
                 self?.imageLoadTask = nil

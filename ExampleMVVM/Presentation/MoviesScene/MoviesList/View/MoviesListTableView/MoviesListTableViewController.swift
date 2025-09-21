@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 final class MoviesListTableViewController: UITableViewController {
 
@@ -6,12 +7,25 @@ final class MoviesListTableViewController: UITableViewController {
 
     var posterImagesRepository: PosterImagesRepository?
     var nextPageLoadingSpinner: UIActivityIndicatorView?
+    private var cancellables = Set<AnyCancellable>()
+    private var currentItems: [MoviesListItemViewModel] = []
 
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        bindToViewModel()
+    }
+    
+    private func bindToViewModel() {
+        viewModel.items
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] items in
+                self?.currentItems = items
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
     }
 
     func reload() {
@@ -42,7 +56,7 @@ final class MoviesListTableViewController: UITableViewController {
 extension MoviesListTableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.items.value.count
+        return currentItems.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -54,10 +68,10 @@ extension MoviesListTableViewController {
             return UITableViewCell()
         }
 
-        cell.fill(with: viewModel.items.value[indexPath.row],
+        cell.fill(with: currentItems[indexPath.row],
                   posterImagesRepository: posterImagesRepository)
 
-        if indexPath.row == viewModel.items.value.count - 1 {
+        if indexPath.row == currentItems.count - 1 {
             viewModel.didLoadNextPage()
         }
 
@@ -65,7 +79,7 @@ extension MoviesListTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel.isEmpty ? tableView.frame.height : super.tableView(tableView, heightForRowAt: indexPath)
+        return currentItems.isEmpty ? tableView.frame.height : super.tableView(tableView, heightForRowAt: indexPath)
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

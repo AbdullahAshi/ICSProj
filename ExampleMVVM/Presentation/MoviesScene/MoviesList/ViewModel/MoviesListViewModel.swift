@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 struct MoviesListViewModelActions {
     /// Note: if you would need to edit movie inside Details screen and update this Movies List screen with updated movie then you would need this closure:
@@ -24,10 +25,10 @@ protocol MoviesListViewModelInput {
 }
 
 protocol MoviesListViewModelOutput {
-    var items: Observable<[MoviesListItemViewModel]> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
-    var loading: Observable<MoviesListViewModelLoading?> { get }
-    var query: Observable<String> { get }
-    var error: Observable<String> { get }
+    var items: AnyPublisher<[MoviesListItemViewModel], Never> { get } /// Also we can calculate view model items on demand:  https://github.com/kudoleh/iOS-Clean-Architecture-MVVM/pull/10/files
+    var loading: AnyPublisher<MoviesListViewModelLoading?, Never> { get }
+    var query: AnyPublisher<String, Never> { get }
+    var error: AnyPublisher<String, Never> { get }
     var isEmpty: Bool { get }
     var screenTitle: String { get }
     var emptyDataTitle: String { get }
@@ -53,11 +54,16 @@ final class DefaultMoviesListViewModel: MoviesListViewModel {
 
     // MARK: - OUTPUT
 
-    let items: Observable<[MoviesListItemViewModel]> = Observable([])
-    let loading: Observable<MoviesListViewModelLoading?> = Observable(.none)
-    let query: Observable<String> = Observable("")
-    let error: Observable<String> = Observable("")
-    var isEmpty: Bool { return items.value.isEmpty }
+    private let itemsSubject = CurrentValueSubject<[MoviesListItemViewModel], Never>([])
+    private let loadingSubject = CurrentValueSubject<MoviesListViewModelLoading?, Never>(.none)
+    private let querySubject = CurrentValueSubject<String, Never>("")
+    private let errorSubject = CurrentValueSubject<String, Never>("")
+    
+    var items: AnyPublisher<[MoviesListItemViewModel], Never> { itemsSubject.eraseToAnyPublisher() }
+    var loading: AnyPublisher<MoviesListViewModelLoading?, Never> { loadingSubject.eraseToAnyPublisher() }
+    var query: AnyPublisher<String, Never> { querySubject.eraseToAnyPublisher() }
+    var error: AnyPublisher<String, Never> { errorSubject.eraseToAnyPublisher() }
+    var isEmpty: Bool { return itemsSubject.value.isEmpty }
     let screenTitle = NSLocalizedString("Movies", comment: "")
     let emptyDataTitle = NSLocalizedString("Search results", comment: "")
     let errorTitle = NSLocalizedString("Error", comment: "")
@@ -85,19 +91,19 @@ final class DefaultMoviesListViewModel: MoviesListViewModel {
             .filter { $0.page != moviesPage.page }
             + [moviesPage]
 
-        items.value = pages.movies.map(MoviesListItemViewModel.init)
+        itemsSubject.send(pages.movies.map(MoviesListItemViewModel.init))
     }
 
     private func resetPages() {
         currentPage = 0
         totalPageCount = 1
         pages.removeAll()
-        items.value.removeAll()
+        itemsSubject.send([])
     }
 
     private func load(movieQuery: MovieQuery, loading: MoviesListViewModelLoading) {
-        self.loading.value = loading
-        query.value = movieQuery.query
+        loadingSubject.send(loading)
+        querySubject.send(movieQuery.query)
 
         moviesLoadTask = searchMoviesUseCase.execute(
             requestValue: .init(query: movieQuery, page: nextPage),
@@ -114,15 +120,15 @@ final class DefaultMoviesListViewModel: MoviesListViewModel {
                     case .failure(let error):
                         self?.handle(error: error)
                     }
-                    self?.loading.value = .none
+                    self?.loadingSubject.send(.none)
                 }
         })
     }
 
     private func handle(error: Error) {
-        self.error.value = error.isInternetConnectionError ?
+        errorSubject.send(error.isInternetConnectionError ?
             NSLocalizedString("No internet connection", comment: "") :
-            NSLocalizedString("Failed loading movies", comment: "")
+            NSLocalizedString("Failed loading movies", comment: ""))
     }
 
     private func update(movieQuery: MovieQuery) {
@@ -138,8 +144,8 @@ extension DefaultMoviesListViewModel {
     func viewDidLoad() { }
 
     func didLoadNextPage() {
-        guard hasMorePages, loading.value == .none else { return }
-        load(movieQuery: .init(query: query.value),
+        guard hasMorePages, loadingSubject.value == .none else { return }
+        load(movieQuery: .init(query: querySubject.value),
              loading: .nextPage)
     }
 
