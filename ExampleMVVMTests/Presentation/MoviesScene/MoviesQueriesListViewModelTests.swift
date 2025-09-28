@@ -1,5 +1,6 @@
 @testable import ExampleMVVM
 import XCTest
+import Combine
 
 class MoviesQueriesListViewModelTests: XCTestCase {
     
@@ -37,6 +38,49 @@ class MoviesQueriesListViewModelTests: XCTestCase {
         }
     }
     
+    // MARK: - Helper Methods
+    
+    private func expectPublisher<T>(
+        _ publisher: AnyPublisher<[T], Never>,
+        toReceive expectedValue: [T],
+        timeout: TimeInterval = 1.0,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) where T: Equatable {
+        let expectation = XCTestExpectation(description: "Publisher should emit expected value")
+        var receivedValue: [T]?
+        
+        let cancellable = publisher
+            .sink { value in
+                receivedValue = value
+                expectation.fulfill()
+            }
+        
+        wait(for: [expectation], timeout: timeout)
+        XCTAssertEqual(receivedValue, expectedValue, file: file, line: line)
+        cancellable.cancel()
+    }
+    
+    private func expectPublisherToBeEmpty<T>(
+        _ publisher: AnyPublisher<[T], Never>,
+        timeout: TimeInterval = 1.0,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        let expectation = XCTestExpectation(description: "Publisher should emit empty array")
+        var receivedValue: [T]?
+        
+        let cancellable = publisher
+            .sink { value in
+                receivedValue = value
+                expectation.fulfill()
+            }
+        
+        wait(for: [expectation], timeout: timeout)
+        XCTAssertTrue(receivedValue?.isEmpty ?? false, file: file, line: line)
+        cancellable.cancel()
+    }
+    
     
     func test_whenFetchRecentMovieQueriesUseCaseReturnsQueries_thenShowTheseQueries() {
         // given
@@ -51,7 +95,8 @@ class MoviesQueriesListViewModelTests: XCTestCase {
         viewModel.viewWillAppear()
         
         // then
-        XCTAssertEqual(viewModel.items.value.map { $0.query }, movieQueries.map { $0.query })
+        let expectedItems = movieQueries.map { MoviesQueryListItemViewModel(query: $0.query) }
+        expectPublisher(viewModel.items, toReceive: expectedItems)
         XCTAssertEqual(useCase.startCalledCount, 1)
     }
     
@@ -68,7 +113,7 @@ class MoviesQueriesListViewModelTests: XCTestCase {
         viewModel.viewWillAppear()
         
         // then
-        XCTAssertTrue(viewModel.items.value.isEmpty)
+        expectPublisherToBeEmpty(viewModel.items)
         XCTAssertEqual(useCase.startCalledCount, 1)
     }
     

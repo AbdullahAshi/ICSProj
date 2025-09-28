@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 
 class MovieDetailsViewModelTests: XCTestCase {
     
@@ -28,7 +29,20 @@ class MovieDetailsViewModelTests: XCTestCase {
         viewModel.updatePosterImage(width: 200)
         
         // then
-        XCTAssertEqual(viewModel.posterImage.value, expectedImage)
+        let expectation = XCTestExpectation(description: "Poster image should be updated")
+        var receivedImage: Data?
+        
+        let cancellable = viewModel.posterImage
+            .sink { image in
+                receivedImage = image
+                expectation.fulfill()
+            }
+        
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(receivedImage, expectedImage)
         XCTAssertEqual(posterImagesRepository.completionCalls, 1)
+        
+        // Clean up
+        cancellable.cancel()
     }
 }
