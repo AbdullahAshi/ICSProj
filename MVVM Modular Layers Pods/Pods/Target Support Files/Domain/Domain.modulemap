@@ -1,6 +1,0 @@
-framework module Domain {
-  umbrella header "Domain-umbrella.h"
-
-  export *
-  module * { export * }
-}
