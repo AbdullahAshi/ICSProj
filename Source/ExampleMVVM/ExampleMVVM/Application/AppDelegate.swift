@@ -3,7 +3,7 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let appDIContainer = AppDIContainer()
+//    let appDIContainer = AppDIContainer()
     var appFlowCoordinator: AppFlowCoordinator?
     var window: UIWindow?
     
@@ -18,17 +18,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navigationController = UINavigationController()
 
         window?.rootViewController = navigationController
-        appFlowCoordinator = AppFlowCoordinator(
-            navigationController: navigationController,
-            appDIContainer: appDIContainer
-        )
-        appFlowCoordinator?.start()
+//        appFlowCoordinator = AppFlowCoordinator(
+//            navigationController: navigationController,
+//            appDIContainer: appDIContainer
+//        )
+//        appFlowCoordinator?.start()
         window?.makeKeyAndVisible()
     
         return true
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        CoreDataStorage.shared.saveContext()
+//        CoreDataStorage.shared.saveContext()
     }
 }

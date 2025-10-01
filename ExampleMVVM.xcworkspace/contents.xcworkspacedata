@@ -4,4 +4,16 @@
    <FileRef
       location = "group:Source/ExampleMVVM/ExampleMVVM.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Source/DomainLayer">
+   </FileRef>
+   <FileRef
+      location = "group:Source/DataLayer">
+   </FileRef>
+   <FileRef
+      location = "group:Source/PresentationLayer">
+   </FileRef>
+   <FileRef
+      location = "group:Source/Common">
+   </FileRef>
 </Workspace>
