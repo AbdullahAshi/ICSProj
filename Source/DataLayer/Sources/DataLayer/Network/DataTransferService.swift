@@ -1,4 +1,5 @@
 import Foundation
+import DomainLayer
 
 public enum DataTransferError: Error {
     case noResponse
@@ -66,7 +67,13 @@ final class DefaultDataTransferService {
     private let errorLogger: DataTransferErrorLogger
     
     init(
-        with networkService: NetworkService,
+        with networkService: NetworkService = DefaultNetworkService(config:  ApiDataNetworkConfig(
+            baseURL: URL(string: "http://api.themoviedb.org")!,
+            queryParameters: [
+                "api_key": "2696829a81b1b5827d515ff121700838",
+                "language": NSLocale.preferredLanguages.first ?? "en"
+            ]
+        )),
         errorResolver: DataTransferErrorResolver = DefaultDataTransferErrorResolver(),
         errorLogger: DataTransferErrorLogger = DefaultDataTransferErrorLogger()
     ) {
@@ -199,3 +206,17 @@ class RawDataResponseDecoder: ResponseDecoder {
         }
     }
 }
+
+//extension DataTransferService: DataTransferServiceProtocol {
+//    public func requestData() -> Data? {
+//        // Implementation for requesting data
+//        return nil
+//    }
+//}
+//
+//extension ImageDataTransferService: ImageDataTransferServiceProtocol {
+//    public func fetchImageData() -> Data? {
+//        // Implementation for fetching image data
+//        return nil
+//    }
+//}

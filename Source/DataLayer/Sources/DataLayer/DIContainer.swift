@@ -1,16 +1,31 @@
+//
+//  DIContainer.swift
+//  DataLayer
+//
+//  Created by Abdullah Alashi on 4/10/2025.
+//
+
 import Common
+import DomainLayer
 
 // Lightweight DI Container based on https://tanaschita.com/dependency-injection-building-lightweight-container/
 import Foundation
 
-final class AppDIContainer: Resolver {
-    @MainActor public static let shared = AppDIContainer()
+final class DIContainer: Resolver {
+    @MainActor public static let shared = DIContainer()
 
     private var factories: [String: Any] = [:]
     private var singletons: [String: Any] = [:]
     private var lifetimes: [String: DependencyLifetime] = [:]
 
-    private init() {}
+    private init() {
+        
+        // Register services
+        register(DomainLayer.DataTransferService.self, factory: {
+            DefaultDataTransferService() as! /*any DataTransferServiceProtocol as*/ DataTransferService
+        }, lifetime: .transient)
+        register(DomainLayer.PosterImagesRepository.self) { DefaultPosterImagesRepository(dataTransferService: <#T##any DataTransferService#>) }
+    }
 
     func register<Service>(_ type: Service.Type, factory: @escaping () -> Service, lifetime: DependencyLifetime) {
         let key = String(describing: type)
@@ -43,10 +58,3 @@ final class AppDIContainer: Resolver {
         }
     }
 }
-
-// Example usage for scene DI containers
-//extension AppDIContainer {
-//    func makeMoviesSceneDIContainer() -> MoviesSceneDIContainer {
-//        return resolve(MoviesSceneDIContainer.self)
-//    }
-//}

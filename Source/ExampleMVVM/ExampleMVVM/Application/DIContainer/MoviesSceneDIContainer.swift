@@ -6,7 +6,7 @@
 //final class MoviesSceneDIContainer: MoviesSearchFlowCoordinatorDependencies {
 //    
 //    struct Dependencies {
-//        let apiDataTransferService: DataTransferService
+////        let apiDataTransferService: DataTransferService
 //        let imageDataTransferService: DataTransferService
 //    }
 //    

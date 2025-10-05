@@ -1,10 +1,17 @@
+//
+//  DIContainer.swift
+//  DomainLayer
+//
+//  Created by Abdullah Alashi on 4/10/2025.
+//
+
 import Common
 
 // Lightweight DI Container based on https://tanaschita.com/dependency-injection-building-lightweight-container/
 import Foundation
 
-final class AppDIContainer: Resolver {
-    @MainActor public static let shared = AppDIContainer()
+final class DIContainer: Resolver {
+    @MainActor public static let shared = DIContainer()
 
     private var factories: [String: Any] = [:]
     private var singletons: [String: Any] = [:]
@@ -43,10 +50,3 @@ final class AppDIContainer: Resolver {
         }
     }
 }
-
-// Example usage for scene DI containers
-//extension AppDIContainer {
-//    func makeMoviesSceneDIContainer() -> MoviesSceneDIContainer {
-//        return resolve(MoviesSceneDIContainer.self)
-//    }
-//}

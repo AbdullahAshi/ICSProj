@@ -1,6 +1,7 @@
 import Foundation
 import DomainLayer
 import Combine
+import Common
 
 final class DefaultPosterImagesRepository {
     
@@ -22,7 +23,7 @@ extension DefaultPosterImagesRepository: DomainLayer.PosterImagesRepository {
         with imagePath: String,
         width: Int,
         completion: @escaping (Result<Data, Error>) -> Void
-    ) -> Cancellable? {
+    ) -> Common.Cancellable? {
         
         let endpoint = APIEndpoints.getMoviePoster(path: imagePath, width: width)
         let task = RepositoryTask()
