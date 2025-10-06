@@ -7,7 +7,7 @@ public final class CoreDataMoviesQueriesStorage {
     private let maxStorageLimit: Int
     private let coreDataStorage: CoreDataStorage
 
-    init(
+    @MainActor public init(
         maxStorageLimit: Int,
         coreDataStorage: CoreDataStorage = CoreDataStorage.shared
     ) {
@@ -18,7 +18,7 @@ public final class CoreDataMoviesQueriesStorage {
 
 extension CoreDataMoviesQueriesStorage: MoviesQueriesStorage {
     
-    func fetchRecentsQueries(
+    public func fetchRecentsQueries(
         maxCount: Int,
         completion: @escaping (Result<[DomainLayer.MovieQuery], Error>) -> Void
     ) {
@@ -38,7 +38,7 @@ extension CoreDataMoviesQueriesStorage: MoviesQueriesStorage {
         }
     }
     
-    func saveRecentQuery(
+    public func saveRecentQuery(
         query: DomainLayer.MovieQuery,
         completion: @escaping (Result<DomainLayer.MovieQuery, Error>) -> Void
     ) {

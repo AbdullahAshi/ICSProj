@@ -1,10 +1,10 @@
 import Foundation
-//import DomainLayer
+import DomainLayer
 import Combine
 
 // MARK: - Data Transfer Object
 
-struct MoviesResponseDTO: Decodable {
+public struct MoviesResponseDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case page
         case totalPages = "total_pages"
@@ -13,10 +13,16 @@ struct MoviesResponseDTO: Decodable {
     let page: Int
     let totalPages: Int
     let movies: [MovieDTO]
+    
+    public init(page: Int, totalPages: Int, movies: [MovieDTO]) {
+        self.page = page
+        self.totalPages = totalPages
+        self.movies = movies
+    }
 }
 
 extension MoviesResponseDTO {
-    struct MovieDTO: Decodable {
+    public struct MovieDTO: Decodable {
         private enum CodingKeys: String, CodingKey {
             case id
             case title
@@ -25,7 +31,7 @@ extension MoviesResponseDTO {
             case overview
             case releaseDate = "release_date"
         }
-        enum GenreDTO: String, Decodable {
+        public enum GenreDTO: String, Decodable {
             case adventure
             case scienceFiction = "science_fiction"
         }
@@ -35,6 +41,15 @@ extension MoviesResponseDTO {
         let posterPath: String?
         let overview: String?
         let releaseDate: String?
+        
+        public init(id: Int, title: String?, genre: GenreDTO?, posterPath: String?, overview: String?, releaseDate: String?) {
+            self.id = id
+            self.title = title
+            self.genre = genre
+            self.posterPath = posterPath
+            self.overview = overview
+            self.releaseDate = releaseDate
+        }
     }
 }
 

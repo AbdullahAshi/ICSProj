@@ -1,11 +1,11 @@
 import Foundation
 import CoreData
 
-final class CoreDataMoviesResponseStorage {
+public final class CoreDataMoviesResponseStorage {
 
     private let coreDataStorage: CoreDataStorage
 
-    init(coreDataStorage: CoreDataStorage = CoreDataStorage.shared) {
+    @MainActor public init(coreDataStorage: CoreDataStorage = CoreDataStorage.shared) {
         self.coreDataStorage = coreDataStorage
     }
 
@@ -39,7 +39,7 @@ final class CoreDataMoviesResponseStorage {
 
 extension CoreDataMoviesResponseStorage: MoviesResponseStorage {
 
-    func getResponse(
+    public func getResponse(
         for requestDto: MoviesRequestDTO,
         completion: @escaping (Result<MoviesResponseDTO?, Error>) -> Void
     ) {
@@ -55,7 +55,7 @@ extension CoreDataMoviesResponseStorage: MoviesResponseStorage {
         }
     }
 
-    func save(
+    public func save(
         response responseDto: MoviesResponseDTO,
         for requestDto: MoviesRequestDTO
     ) {

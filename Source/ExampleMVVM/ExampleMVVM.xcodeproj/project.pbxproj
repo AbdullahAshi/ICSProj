@@ -31,6 +31,9 @@
 		A61F95BA2E8C922800474259 /* DomainLayer in Frameworks */ = {isa = PBXBuildFile; productRef = A61F95B92E8C922800474259 /* DomainLayer */; };
 		A61F95C62E8D672200474259 /* PresentationLayer in Frameworks */ = {isa = PBXBuildFile; productRef = A61F95C52E8D672200474259 /* PresentationLayer */; };
 		A61F95C92E8D75A100474259 /* PresentationLayer in Frameworks */ = {isa = PBXBuildFile; productRef = A61F95C82E8D75A100474259 /* PresentationLayer */; };
+		A61F95CB2E93340900474259 /* DataLayer in Frameworks */ = {isa = PBXBuildFile; productRef = A61F95CA2E93340900474259 /* DataLayer */; };
+		A61F95CD2E9470FB00474259 /* DataLayer in Frameworks */ = {isa = PBXBuildFile; productRef = A61F95CC2E9470FB00474259 /* DataLayer */; };
+		A61F95D02E94718D00474259 /* DataLayer in Frameworks */ = {isa = PBXBuildFile; productRef = A61F95CF2E94718D00474259 /* DataLayer */; };
 		FC2B715C2156FF93002BD59E /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2B715B2156FF93002BD59E /* AppAppearance.swift */; };
 /* End PBXBuildFile section */
 
@@ -95,8 +98,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A61F95D02E94718D00474259 /* DataLayer in Frameworks */,
 				A61F95C92E8D75A100474259 /* PresentationLayer in Frameworks */,
 				A61F95BA2E8C922800474259 /* DomainLayer in Frameworks */,
+				A61F95CD2E9470FB00474259 /* DataLayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A61F95CB2E93340900474259 /* DataLayer in Frameworks */,
 				A61F95C62E8D672200474259 /* PresentationLayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,6 +409,7 @@
 			packageReferences = (
 				A61F95B72E8C8E4300474259 /* XCLocalSwiftPackageReference "../DomainLayer" */,
 				A61F95C72E8D75A100474259 /* XCLocalSwiftPackageReference "../PresentationLayer" */,
+				A61F95CE2E94718D00474259 /* XCLocalSwiftPackageReference "../DataLayer" */,
 			);
 			productRefGroup = 1FA5338A201E1FDE00747E55 /* Products */;
 			projectDirPath = "";
@@ -830,6 +837,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../PresentationLayer;
 		};
+		A61F95CE2E94718D00474259 /* XCLocalSwiftPackageReference "../DataLayer" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../DataLayer;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -844,6 +855,18 @@
 		A61F95C82E8D75A100474259 /* PresentationLayer */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PresentationLayer;
+		};
+		A61F95CA2E93340900474259 /* DataLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DataLayer;
+		};
+		A61F95CC2E9470FB00474259 /* DataLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DataLayer;
+		};
+		A61F95CF2E94718D00474259 /* DataLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DataLayer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

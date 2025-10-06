@@ -1,17 +1,18 @@
 import Foundation
+import DomainLayer
 
-final class DefaultMoviesQueriesRepository {
+public final class DefaultMoviesQueriesRepository {
     
     private var moviesQueriesPersistentStorage: MoviesQueriesStorage
     
-    init(moviesQueriesPersistentStorage: MoviesQueriesStorage) {
+    public init(moviesQueriesPersistentStorage: MoviesQueriesStorage) {
         self.moviesQueriesPersistentStorage = moviesQueriesPersistentStorage
     }
 }
 
 extension DefaultMoviesQueriesRepository: DomainLayer.MoviesQueriesRepository {
     
-    func fetchRecentsQueries(
+    public func fetchRecentsQueries(
         maxCount: Int,
         completion: @escaping (Result<[DomainLayer.MovieQuery], Error>) -> Void
     ) {
@@ -21,7 +22,7 @@ extension DefaultMoviesQueriesRepository: DomainLayer.MoviesQueriesRepository {
         )
     }
     
-    func saveRecentQuery(
+    public func saveRecentQuery(
         query: DomainLayer.MovieQuery,
         completion: @escaping (Result<DomainLayer.MovieQuery, Error>) -> Void
     ) {

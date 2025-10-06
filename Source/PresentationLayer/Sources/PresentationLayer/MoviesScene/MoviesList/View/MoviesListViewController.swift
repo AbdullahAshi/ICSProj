@@ -24,6 +24,7 @@ public final class MoviesListViewController: UIViewController, StoryboardInstant
         posterImagesRepository: DomainLayer.PosterImagesRepository?
     ) -> MoviesListViewController {
         let view = MoviesListViewController.instantiateViewController()
+//        let view = MoviesListViewController.instantiate
         view.viewModel = viewModel
         view.posterImagesRepository = posterImagesRepository
         return view

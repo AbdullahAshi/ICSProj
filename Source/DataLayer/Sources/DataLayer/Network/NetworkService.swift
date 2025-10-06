@@ -8,13 +8,13 @@ public enum NetworkError: Error {
     case urlGeneration
 }
 
-protocol NetworkCancellable {
+public protocol NetworkCancellable {
     func cancel()
 }
 
 extension URLSessionTask: NetworkCancellable { }
 
-protocol NetworkService {
+public protocol NetworkService {
     typealias CompletionHandler = (Result<Data?, NetworkError>) -> Void
     
     func request(endpoint: Requestable, completion: @escaping CompletionHandler) -> NetworkCancellable?

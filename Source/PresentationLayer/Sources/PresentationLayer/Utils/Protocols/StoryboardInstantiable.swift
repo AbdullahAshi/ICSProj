@@ -11,7 +11,7 @@ extension StoryboardInstantiable where Self: UIViewController {
         return NSStringFromClass(Self.self).components(separatedBy: ".").last!
     }
     
-    @MainActor static func instantiateViewController(_ bundle: Bundle? = nil) -> Self {
+    @MainActor static func instantiateViewController(_ bundle: Bundle? = .module) -> Self {
         let fileName = defaultFileName
         let storyboard = UIStoryboard(name: fileName, bundle: bundle)
         guard let vc = storyboard.instantiateInitialViewController() as? Self else {

@@ -1,10 +1,14 @@
 import UIKit
+import PresentationLayer
+import DomainLayer
+import DataLayer
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 //    let appDIContainer = AppDIContainer()
-    var appFlowCoordinator: AppFlowCoordinator?
+    // var appFlowCoordinator: AppFlowCoordinator?
+    private let applicationCoordinator: ApplicationCoordinator = .init()
     var window: UIWindow?
     
     func application(
@@ -14,16 +18,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         AppAppearance.setupAppearance()
         
-        window = UIWindow(frame: UIScreen.main.bounds)
-        let navigationController = UINavigationController()
-
-        window?.rootViewController = navigationController
+        if window == nil {
+            window = UIWindow(frame: UIScreen.main.bounds)
+        }
 //        appFlowCoordinator = AppFlowCoordinator(
 //            navigationController: navigationController,
 //            appDIContainer: appDIContainer
 //        )
 //        appFlowCoordinator?.start()
-        window?.makeKeyAndVisible()
+        applicationCoordinator.start(on: window!,
+                                     moviesRepository: DataLayer.DefaultMoviesRepository(),
+                                     moviesQueriesRepository: DataLayer.DefaultMoviesQueriesRepository(moviesQueriesPersistentStorage: CoreDataMoviesQueriesStorage(maxStorageLimit: 10)),
+                                     posterImagesRepository: DataLayer.DefaultPosterImagesRepository())
+//        window?.makeKeyAndVisible()
     
         return true
     }

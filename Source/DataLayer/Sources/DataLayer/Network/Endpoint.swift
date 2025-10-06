@@ -1,6 +1,6 @@
 import Foundation
 
-enum HTTPMethodType: String {
+public enum HTTPMethodType: String {
     case get     = "GET"
     case head    = "HEAD"
     case post    = "POST"
@@ -47,7 +47,7 @@ class Endpoint<R>: ResponseRequestable {
     }
 }
 
-protocol BodyEncoder {
+public protocol BodyEncoder {
     func encode(_ parameters: [String: Any]) -> Data?
 }
 
@@ -63,7 +63,7 @@ struct AsciiBodyEncoder: BodyEncoder {
     }
 }
 
-protocol Requestable {
+public protocol Requestable {
     var path: String { get }
     var isFullPath: Bool { get }
     var method: HTTPMethodType { get }
@@ -77,7 +77,7 @@ protocol Requestable {
     func urlRequest(with networkConfig: NetworkConfigurable) throws -> URLRequest
 }
 
-protocol ResponseRequestable: Requestable {
+public protocol ResponseRequestable: Requestable {
     associatedtype Response
     
     var responseDecoder: ResponseDecoder { get }

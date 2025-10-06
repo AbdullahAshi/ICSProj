@@ -1,28 +1,40 @@
 import Foundation
 import DomainLayer
-import Combine
+import Common
 
-final class DefaultPosterImagesRepository {
+public final class DefaultPosterImagesRepository {
     
     private let dataTransferService: DataTransferService
     private let backgroundQueue: DataTransferDispatchQueue
 
-    init(
-        dataTransferService: DataTransferService,
+    public init(dataTransferService: DataTransferService? = nil,
         backgroundQueue: DataTransferDispatchQueue = DispatchQueue.global(qos: .userInitiated)
     ) {
-        self.dataTransferService = dataTransferService
+        if let dataTransferService = dataTransferService {
+            self.dataTransferService = dataTransferService
+        } else {
+            let config = ApiDataNetworkConfig(
+                baseURL: URL(string: AppConfiguration.apiBaseURL)!,
+                queryParameters: [
+                    "api_key": AppConfiguration.apiKey,
+                    "language": NSLocale.preferredLanguages.first ?? "en"
+                ]
+            )
+            
+            let apiDataNetwork = DefaultNetworkService(config: config)
+            self.dataTransferService = DefaultDataTransferService(with: apiDataNetwork)
+        }
         self.backgroundQueue = backgroundQueue
     }
 }
 
 extension DefaultPosterImagesRepository: DomainLayer.PosterImagesRepository {
     
-    func fetchImage(
+    public func fetchImage(
         with imagePath: String,
         width: Int,
         completion: @escaping (Result<Data, Error>) -> Void
-    ) -> Cancellable? {
+    ) -> Common.Cancellable? {
         
         let endpoint = APIEndpoints.getMoviePoster(path: imagePath, width: width)
         let task = RepositoryTask()

@@ -1,15 +1,14 @@
 //import Foundation
+//import DataLayer
 //
-//final class AppDIContainer {
-//    
-//    lazy var appConfiguration = AppConfiguration()
-//    
+//public final class AppDIContainer {
+//
 //    // MARK: - Network
 //    lazy var apiDataTransferService: DataTransferService = {
 //        let config = ApiDataNetworkConfig(
-//            baseURL: URL(string: appConfiguration.apiBaseURL)!,
+//            baseURL: URL(string: AppConfiguration.apiBaseURL)!,
 //            queryParameters: [
-//                "api_key": appConfiguration.apiKey,
+//                "api_key": AppConfiguration.apiKey,
 //                "language": NSLocale.preferredLanguages.first ?? "en"
 //            ]
 //        )
@@ -19,7 +18,7 @@
 //    }()
 //    lazy var imageDataTransferService: DataTransferService = {
 //        let config = ApiDataNetworkConfig(
-//            baseURL: URL(string: appConfiguration.imagesBaseURL)!
+//            baseURL: URL(string: AppConfiguration.imagesBaseURL)!
 //        )
 //        let imagesDataNetwork = DefaultNetworkService(config: config)
 //        return DefaultDataTransferService(with: imagesDataNetwork)

@@ -6,9 +6,9 @@ enum CoreDataStorageError: Error {
     case deleteError(Error)
 }
 
-final class CoreDataStorage {
+public final class CoreDataStorage {
 
-    static let shared = CoreDataStorage()
+    @MainActor public static let shared = CoreDataStorage()
     
     // MARK: - Core Data stack
     private lazy var persistentContainer: NSPersistentContainer = {

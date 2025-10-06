@@ -2,6 +2,8 @@
 //import SwiftUI
 //import DomainLayer
 //import PresentationLayer
+//import DataLayer
+//
 //
 //final class MoviesSceneDIContainer: MoviesSearchFlowCoordinatorDependencies {
 //    
@@ -13,14 +15,14 @@
 //    private let dependencies: Dependencies
 //
 //    // MARK: - Persistent Storage
-//    lazy var moviesQueriesStorage: MoviesQueriesStorage = CoreDataMoviesQueriesStorage(maxStorageLimit: 10)
-//    lazy var moviesResponseCache: MoviesResponseStorage = CoreDataMoviesResponseStorage()
 //
 //    init(dependencies: Dependencies) {
 //        self.dependencies = dependencies        
 //    }
 //    
 //    // MARK: - Use Cases
+//    
+//    ///
 //    func makeSearchMoviesUseCase() -> DomainLayer.SearchMoviesUseCase {
 //        DefaultSearchMoviesUseCase(
 //            moviesRepository: makeMoviesRepository(),
@@ -40,15 +42,17 @@
 //    }
 //    
 //    // MARK: - Repositories
+//    //////////////////////////////////////////////////
 //    func makeMoviesRepository() -> DomainLayer.MoviesRepository {
 //        DefaultMoviesRepository(
 //            dataTransferService: dependencies.apiDataTransferService,
-//            cache: moviesResponseCache
+//            cache: CoreDataMoviesResponseStorage()
 //        )
 //    }
+//    /////////////////////////////////////////////////////////
 //    func makeMoviesQueriesRepository() -> DomainLayer.MoviesQueriesRepository {
 //        DefaultMoviesQueriesRepository(
-//            moviesQueriesPersistentStorage: moviesQueriesStorage
+//            moviesQueriesPersistentStorage: CoreDataMoviesQueriesStorage(maxStorageLimit: 10)
 //        )
 //    }
 //    func makePosterImagesRepository() -> DomainLayer.PosterImagesRepository {

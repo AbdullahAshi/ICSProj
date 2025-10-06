@@ -4,32 +4,41 @@ import Foundation
 import DomainLayer
 import Common
 
-final class DefaultMoviesRepository {
-
+public final class DefaultMoviesRepository: DomainLayer.MoviesRepository {
     private let dataTransferService: DataTransferService
     private let cache: MoviesResponseStorage
     private let backgroundQueue: DataTransferDispatchQueue
 
-    init(
-        dataTransferService: DataTransferService,
-        cache: MoviesResponseStorage,
+    @MainActor public init(
+        dataTransferService: DataTransferService? = nil,
+        cache: MoviesResponseStorage = CoreDataMoviesResponseStorage(),
         backgroundQueue: DataTransferDispatchQueue = DispatchQueue.global(qos: .userInitiated)
     ) {
-        self.dataTransferService = dataTransferService
+        if let dataTransferService = dataTransferService {
+            self.dataTransferService = dataTransferService
+        } else {
+            let config = ApiDataNetworkConfig(
+                baseURL: URL(string: AppConfiguration.apiBaseURL)!,
+                queryParameters: [
+                    "api_key": AppConfiguration.apiKey,
+                    "language": NSLocale.preferredLanguages.first ?? "en"
+                ]
+            )
+            
+            let apiDataNetwork = DefaultNetworkService(config: config)
+            self.dataTransferService = DefaultDataTransferService(with: apiDataNetwork)
+        }
         self.cache = cache
         self.backgroundQueue = backgroundQueue
     }
-}
-
-extension DefaultMoviesRepository: DomainLayer.MoviesRepository {
     
-    func fetchMoviesList(
-        query: DomainLayer.MovieQuery,
-        page: Int,
-        cached: @escaping (DomainLayer.MoviesPage) -> Void,
-        completion: @escaping (Result<DomainLayer.MoviesPage, Error>) -> Void
-    ) -> Common.Cancellable? {
-
+//    public func fetchMoviesList(
+//        query: DomainLayer.MovieQuery,
+//        page: Int,
+//        cached: @escaping (DomainLayer.MoviesPage) -> Void,
+//        completion: @escaping (Result<DomainLayer.MoviesPage, Error>) -> Void
+//    ) -> Common.Cancellable? {
+    public func fetchMoviesList(query: DomainLayer.MovieQuery, page: Int, cached: @escaping (DomainLayer.MoviesPage) -> Void, completion: @escaping (Result<DomainLayer.MoviesPage, Error>) -> Void) -> ( Common.Cancellable)? {
         let requestDTO = MoviesRequestDTO(query: query.query, page: page)
         let task = RepositoryTask()
 
