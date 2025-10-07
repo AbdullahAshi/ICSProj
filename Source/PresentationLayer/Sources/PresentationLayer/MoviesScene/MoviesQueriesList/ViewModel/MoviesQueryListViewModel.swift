@@ -16,10 +16,9 @@ protocol MoviesQueryListViewModelOutput {
 
 protocol MoviesQueryListViewModel: MoviesQueryListViewModelInput, MoviesQueryListViewModelOutput { }
 
-typealias FetchRecentMovieQueriesUseCaseFactory = (
-    DomainLayer.FetchRecentMovieQueriesUseCase.RequestValue,
-    @escaping (DomainLayer.FetchRecentMovieQueriesUseCase.ResultValue) -> Void
-) -> DomainLayer.UseCase
+typealias FetchRecentMovieQueriesUseCaseFactory = (DomainLayer.FetchRecentMovieQueriesUseCase.RequestValue,
+    @escaping (DomainLayer.FetchRecentMovieQueriesUseCase.ResultValue) -> Void,
+                                                   MoviesQueriesRepository) -> DomainLayer.UseCase
 
 final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
 
@@ -27,6 +26,7 @@ final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
     private let fetchRecentMovieQueriesUseCaseFactory: FetchRecentMovieQueriesUseCaseFactory
     private let didSelect: MoviesQueryListViewModelDidSelectAction?
     private let mainQueue: Common.DispatchQueueType
+    private let moviesQueriesRepository: MoviesQueriesRepository
     
     // MARK: - OUTPUT
     private let itemsSubject = CurrentValueSubject<[MoviesQueryListItemViewModel], Never>([])
@@ -35,6 +35,7 @@ final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
     init(
         numberOfQueriesToShow: Int,
         fetchRecentMovieQueriesUseCaseFactory: @escaping FetchRecentMovieQueriesUseCaseFactory,
+        moviesQueriesRepository: MoviesQueriesRepository,
         didSelect: MoviesQueryListViewModelDidSelectAction? = nil,
         mainQueue: Common.DispatchQueueType = DispatchQueue.main
     ) {
@@ -42,6 +43,7 @@ final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
         self.fetchRecentMovieQueriesUseCaseFactory = fetchRecentMovieQueriesUseCaseFactory
         self.didSelect = didSelect
         self.mainQueue = mainQueue
+        self.moviesQueriesRepository = moviesQueriesRepository
     }
     
     private func updateMoviesQueries() {
@@ -58,7 +60,7 @@ final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
                 }
             }
         }
-        let useCase = fetchRecentMovieQueriesUseCaseFactory(request, completion)
+        let useCase = fetchRecentMovieQueriesUseCaseFactory(request, completion, moviesQueriesRepository)
         useCase.start()
     }
 }

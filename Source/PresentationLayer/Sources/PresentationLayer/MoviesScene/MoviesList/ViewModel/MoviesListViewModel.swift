@@ -3,13 +3,13 @@ import Combine
 import DomainLayer
 import Common
 
-public struct MoviesListViewModelActions {
-    /// Note: if you would need to edit movie inside Details screen and update this Movies List screen with updated movie then you would need this closure:
-    /// showMovieDetails: (Movie, @escaping (_ updated: Movie) -> Void) -> Void
-    let showMovieDetails: (DomainLayer.Movie) -> Void
-    let showMovieQueriesSuggestions: (@escaping (_ didSelect: DomainLayer.MovieQuery) -> Void) -> Void
-    let closeMovieQueriesSuggestions: () -> Void
-}
+//public struct MoviesListViewModelActions {
+//    /// Note: if you would need to edit movie inside Details screen and update this Movies List screen with updated movie then you would need this closure:
+//    /// showMovieDetails: (Movie, @escaping (_ updated: Movie) -> Void) -> Void
+//    let showMovieDetails: (DomainLayer.Movie) -> Void
+//    let showMovieQueriesSuggestions: (@escaping (_ didSelect: DomainLayer.MovieQuery) -> Void) -> Void
+//    let closeMovieQueriesSuggestions: () -> Void
+//}
 
 enum MoviesListViewModelLoading {
     case fullScreen
@@ -43,7 +43,7 @@ typealias MoviesListViewModel = MoviesListViewModelInput & MoviesListViewModelOu
 final class DefaultMoviesListViewModel: MoviesListViewModel {
 
     private let searchMoviesUseCase: DomainLayer.SearchMoviesUseCase
-    private let actions: MoviesListViewModelActions?
+//    private let actions: MoviesListViewModelActions?
 
     var currentPage: Int = 0
     var totalPageCount: Int = 1
@@ -61,6 +61,20 @@ final class DefaultMoviesListViewModel: MoviesListViewModel {
     private let querySubject = CurrentValueSubject<String, Never>("")
     private let errorSubject = CurrentValueSubject<String, Never>("")
     
+    // Navigation events - not direct navigation calls
+      let navigationEvents = PassthroughSubject<NavigationEvent, Never>()
+      
+      enum NavigationEvent {
+          
+//          let showMovieDetails: (DomainLayer.Movie) -> Void
+//          let showMovieQueriesSuggestions: (@escaping (_ didSelect: DomainLayer.MovieQuery) -> Void) -> Void
+//          let closeMovieQueriesSuggestions: () -> Void
+//
+          case showMovieDetails(movie: DomainLayer.Movie)
+          case showMovieQueriesSuggestions( (_ didSelect: DomainLayer.MovieQuery) -> Void)
+          case closeMovieQueriesSuggestions
+      }
+    
     var items: AnyPublisher<[MoviesListItemViewModel], Never> { itemsSubject.eraseToAnyPublisher() }
     var loading: AnyPublisher<MoviesListViewModelLoading?, Never> { loadingSubject.eraseToAnyPublisher() }
     var query: AnyPublisher<String, Never> { querySubject.eraseToAnyPublisher() }
@@ -75,11 +89,9 @@ final class DefaultMoviesListViewModel: MoviesListViewModel {
     
     init(
         searchMoviesUseCase: DomainLayer.SearchMoviesUseCase,
-        actions: MoviesListViewModelActions? = nil,
         mainQueue: Common.DispatchQueueType = DispatchQueue.main
     ) {
         self.searchMoviesUseCase = searchMoviesUseCase
-        self.actions = actions
         self.mainQueue = mainQueue
     }
 
@@ -161,15 +173,18 @@ extension DefaultMoviesListViewModel {
     }
 
     func showQueriesSuggestions() {
-        actions?.showMovieQueriesSuggestions(update(movieQuery:))
+        navigationEvents.send(.showMovieQueriesSuggestions(update(movieQuery:)))
+//        actions?.showMovieQueriesSuggestions(update(movieQuery:))
     }
 
     func closeQueriesSuggestions() {
-        actions?.closeMovieQueriesSuggestions()
+        navigationEvents.send(.closeMovieQueriesSuggestions)
+        //actions?.closeMovieQueriesSuggestions()
     }
 
     func didSelectItem(at index: Int) {
-        actions?.showMovieDetails(pages.movies[index])
+        navigationEvents.send(.showMovieDetails(movie: pages.movies[index]))
+        //actions?.showMovieDetails(pages.movies[index])
     }
 }
 
