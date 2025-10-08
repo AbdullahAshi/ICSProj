@@ -9,7 +9,7 @@ public final class DefaultMoviesRepository: DomainLayer.MoviesRepository {
     private let cache: MoviesResponseStorage
     private let backgroundQueue: DataTransferDispatchQueue
 
-    @MainActor public init(
+    public init(
         dataTransferService: DataTransferService? = nil,
         cache: MoviesResponseStorage = CoreDataMoviesResponseStorage(),
         backgroundQueue: DataTransferDispatchQueue = DispatchQueue.global(qos: .userInitiated)

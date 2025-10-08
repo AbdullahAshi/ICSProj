@@ -56,6 +56,10 @@ public final class DIContainerDataLayer: DomainLayer.DIContainerDataLayerProtoco
         return DefaultMoviesQueriesRepository(moviesQueriesPersistentStorage: CoreDataMoviesQueriesStorage(maxStorageLimit: 10))
     }
     
+    public func makeMoviesRepository() -> DomainLayer.MoviesRepository {
+        return DefaultMoviesRepository(dataTransferService: makeDataTransferService())
+    }
+    
     public func makePosterImagesRepository() -> DomainLayer.PosterImagesRepository {
         return DefaultPosterImagesRepository(dataTransferService: makeDataTransferService())
     }

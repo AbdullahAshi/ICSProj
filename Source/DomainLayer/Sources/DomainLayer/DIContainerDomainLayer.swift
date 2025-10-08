@@ -12,6 +12,7 @@ import Common
 public protocol DIContainerDataLayerProtocol {
     func makePosterImagesRepository() -> PosterImagesRepository
     func makeMoviesQueriesRepository() -> MoviesQueriesRepository
+    func makeMoviesRepository() -> MoviesRepository
 }
 
 public protocol DIContainerDomainLayerProtocol {
@@ -39,6 +40,11 @@ public final class DIContainerDomainLayer: DIContainerDomainLayerProtocol {
             FetchRecentMovieQueriesUseCase(moviesQueriesRepository: self.dataLayerDIContainer.makeMoviesQueriesRepository())
         }, lifetime: .singleton)
         
+        diContainer.register(SearchMoviesUseCase.self, factory: {
+            DefaultSearchMoviesUseCase(moviesRepository: self.dataLayerDIContainer.makeMoviesRepository(),
+                                       moviesQueriesRepository: self.dataLayerDIContainer.makeMoviesQueriesRepository())
+        }, lifetime: .transient)
+        
         // Add more registrations as needed
     }
 
@@ -48,12 +54,8 @@ public final class DIContainerDomainLayer: DIContainerDomainLayerProtocol {
         
         return diContainer.resolve(FetchRecentMovieQueriesUseCase.self)
     }
-//
-//    private func makeDataTransferService() -> DataTransferService {
-//        return DefaultDataTransferService(with: makeNetworkService())
-//    }
-//    
-//    public func makePosterImagesRepository() -> DomainLayer.PosterImagesRepository {
-//        return DefaultPosterImagesRepository(dataTransferService: makeDataTransferService())
-//    }
+    
+    public func makeSearchMoviesUseCase() -> SearchMoviesUseCase? {
+        return diContainer.resolve(SearchMoviesUseCase.self)
+    }
 }

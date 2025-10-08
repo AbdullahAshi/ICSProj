@@ -5,7 +5,7 @@ public final class CoreDataMoviesResponseStorage {
 
     private let coreDataStorage: CoreDataStorage
 
-    @MainActor public init(coreDataStorage: CoreDataStorage = CoreDataStorage.shared) {
+    public init(coreDataStorage: CoreDataStorage = CoreDataStorage.shared) {
         self.coreDataStorage = coreDataStorage
     }
 
