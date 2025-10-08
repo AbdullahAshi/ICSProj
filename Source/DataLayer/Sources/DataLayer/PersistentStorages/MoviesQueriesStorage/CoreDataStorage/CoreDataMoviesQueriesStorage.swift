@@ -7,12 +7,12 @@ public final class CoreDataMoviesQueriesStorage {
     private let maxStorageLimit: Int
     private let coreDataStorage: CoreDataStorage
 
-    @MainActor public init(
-        maxStorageLimit: Int,
-        coreDataStorage: CoreDataStorage = CoreDataStorage.shared
+    public init(
+        maxStorageLimit: Int//,
+//        coreDataStorage: CoreDataStorage = CoreDataStorage.shared
     ) {
         self.maxStorageLimit = maxStorageLimit
-        self.coreDataStorage = coreDataStorage
+        self.coreDataStorage = CoreDataStorage.shared
     }
 }
 

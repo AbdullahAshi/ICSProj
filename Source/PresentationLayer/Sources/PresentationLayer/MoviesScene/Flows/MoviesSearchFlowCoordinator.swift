@@ -64,7 +64,8 @@ public final class MoviesSearchCoordinator: Coordinating {
     @MainActor public func start(on window: WindowType,
                                  moviesRepository: DomainLayer.MoviesRepository,
                                  moviesQueriesRepository: DomainLayer.MoviesQueriesRepository,
-                                 posterImagesRepository: DomainLayer.PosterImagesRepository
+                                 posterImagesRepository: DomainLayer.PosterImagesRepository,
+                                 container: DomainLayer.DIContainerDomainLayerProtocol
     ) {
         let defaultSearchMoviesUseCase = DefaultSearchMoviesUseCase(moviesRepository: moviesRepository,
                                                                     moviesQueriesRepository: moviesQueriesRepository
@@ -147,7 +148,7 @@ public final class MoviesSearchCoordinator: Coordinating {
 //        } else { // UIKit
             let vc = MoviesQueriesTableViewController.create(with: DefaultMoviesQueryListViewModel(
                 numberOfQueriesToShow: 10,
-                fetchRecentMovieQueriesUseCaseFactory: makeFetchRecentMovieQueriesUseCase,
+                //fetchRecentMovieQueriesUseCaseFactory: makeFetchRecentMovieQueriesUseCase,
                 moviesQueriesRepository: moviesQueriesRepository,
                 didSelect: didSelect))
             if let moviesListViewController = navigationController.children.first as? MoviesListViewController,
@@ -159,13 +160,13 @@ public final class MoviesSearchCoordinator: Coordinating {
     }
     
         func makeFetchRecentMovieQueriesUseCase(
-            requestValue: DomainLayer.FetchRecentMovieQueriesUseCase.RequestValue,
-            completion: @escaping (DomainLayer.FetchRecentMovieQueriesUseCase.ResultValue) -> Void,
+//            requestValue: DomainLayer.FetchRecentMovieQueriesUseCase.RequestValue,
+//            completion: @escaping (DomainLayer.FetchRecentMovieQueriesUseCase.ResultValue) -> Void,
             moviesQueriesRepository: MoviesQueriesRepository
-        ) -> UseCase {
+        ) -> FetchRecentMovieQueriesUseCase {
             FetchRecentMovieQueriesUseCase(
-                requestValue: requestValue,
-                completion: completion,
+//                requestValue: requestValue,
+//                completion: completion,
                 moviesQueriesRepository: moviesQueriesRepository
             )
         }

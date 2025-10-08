@@ -6,7 +6,7 @@ import DataLayer
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-//    let appDIContainer = AppDIContainer()
+    let appDIContainer = AppDIContainer()
     // var appFlowCoordinator: AppFlowCoordinator?
     private let applicationCoordinator: ApplicationCoordinator = .init()
     var window: UIWindow?
@@ -29,7 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         applicationCoordinator.start(on: window!,
                                      moviesRepository: DataLayer.DefaultMoviesRepository(),
                                      moviesQueriesRepository: DataLayer.DefaultMoviesQueriesRepository(moviesQueriesPersistentStorage: CoreDataMoviesQueriesStorage(maxStorageLimit: 10)),
-                                     posterImagesRepository: DataLayer.DefaultPosterImagesRepository())
+                                     posterImagesRepository: DataLayer.DefaultPosterImagesRepository(),
+                                     appDIContainer: appDIContainer)
 //        window?.makeKeyAndVisible()
     
         return true

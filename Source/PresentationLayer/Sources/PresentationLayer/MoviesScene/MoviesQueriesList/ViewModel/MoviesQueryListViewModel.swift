@@ -16,14 +16,14 @@ protocol MoviesQueryListViewModelOutput {
 
 protocol MoviesQueryListViewModel: MoviesQueryListViewModelInput, MoviesQueryListViewModelOutput { }
 
-typealias FetchRecentMovieQueriesUseCaseFactory = (DomainLayer.FetchRecentMovieQueriesUseCase.RequestValue,
-    @escaping (DomainLayer.FetchRecentMovieQueriesUseCase.ResultValue) -> Void,
-                                                   MoviesQueriesRepository) -> DomainLayer.UseCase
+//typealias FetchRecentMovieQueriesUseCaseFactory = (DomainLayer.FetchRecentMovieQueriesUseCase.RequestValue,
+//    @escaping (DomainLayer.FetchRecentMovieQueriesUseCase.ResultValue) -> Void,
+//                                                   MoviesQueriesRepository) -> DomainLayer.UseCase
 
 final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
 
     private let numberOfQueriesToShow: Int
-    private let fetchRecentMovieQueriesUseCaseFactory: FetchRecentMovieQueriesUseCaseFactory
+//    private let fetchRecentMovieQueriesUseCaseFactory: FetchRecentMovieQueriesUseCaseFactory
     private let didSelect: MoviesQueryListViewModelDidSelectAction?
     private let mainQueue: Common.DispatchQueueType
     private let moviesQueriesRepository: MoviesQueriesRepository
@@ -34,34 +34,34 @@ final class DefaultMoviesQueryListViewModel: MoviesQueryListViewModel {
     
     init(
         numberOfQueriesToShow: Int,
-        fetchRecentMovieQueriesUseCaseFactory: @escaping FetchRecentMovieQueriesUseCaseFactory,
+//        fetchRecentMovieQueriesUseCaseFactory: @escaping FetchRecentMovieQueriesUseCaseFactory,
         moviesQueriesRepository: MoviesQueriesRepository,
         didSelect: MoviesQueryListViewModelDidSelectAction? = nil,
         mainQueue: Common.DispatchQueueType = DispatchQueue.main
     ) {
         self.numberOfQueriesToShow = numberOfQueriesToShow
-        self.fetchRecentMovieQueriesUseCaseFactory = fetchRecentMovieQueriesUseCaseFactory
+//        self.fetchRecentMovieQueriesUseCaseFactory = fetchRecentMovieQueriesUseCaseFactory
         self.didSelect = didSelect
         self.mainQueue = mainQueue
         self.moviesQueriesRepository = moviesQueriesRepository
     }
     
     private func updateMoviesQueries() {
-        let request = DomainLayer.FetchRecentMovieQueriesUseCase.RequestValue(maxCount: numberOfQueriesToShow)
-        let completion: (DomainLayer.FetchRecentMovieQueriesUseCase.ResultValue) -> Void = { [weak self] result in
-            self?.mainQueue.async {
-                switch result {
-                case .success(let items):
-                    self?.itemsSubject.send(items
-                        .map { $0.query }
-                        .map(MoviesQueryListItemViewModel.init))
-                case .failure:
-                    break
-                }
-            }
-        }
-        let useCase = fetchRecentMovieQueriesUseCaseFactory(request, completion, moviesQueriesRepository)
-        useCase.start()
+//        let request = DomainLayer.FetchRecentMovieQueriesUseCase.RequestValue(maxCount: numberOfQueriesToShow)
+//        let completion: (DomainLayer.FetchRecentMovieQueriesUseCase.ResultValue) -> Void = { [weak self] result in
+//            self?.mainQueue.async {
+//                switch result {
+//                case .success(let items):
+//                    self?.itemsSubject.send(items
+//                        .map { $0.query }
+//                        .map(MoviesQueryListItemViewModel.init))
+//                case .failure:
+//                    break
+//                }
+//            }
+//        }
+//        let useCase = fetchRecentMovieQueriesUseCaseFactory(request, completion, moviesQueriesRepository)
+//        useCase.start()
     }
 }
 
