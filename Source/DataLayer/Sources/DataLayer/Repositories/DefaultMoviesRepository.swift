@@ -10,24 +10,11 @@ public final class DefaultMoviesRepository: DomainLayer.MoviesRepository {
     private let backgroundQueue: DataTransferDispatchQueue
 
     public init(
-        dataTransferService: DataTransferService? = nil,
+        dataTransferService: DataTransferService,
         cache: MoviesResponseStorage = CoreDataMoviesResponseStorage(),
         backgroundQueue: DataTransferDispatchQueue = DispatchQueue.global(qos: .userInitiated)
     ) {
-        if let dataTransferService = dataTransferService {
-            self.dataTransferService = dataTransferService
-        } else {
-            let config = ApiDataNetworkConfig(
-                baseURL: URL(string: AppConfiguration.apiBaseURL)!,
-                queryParameters: [
-                    "api_key": AppConfiguration.apiKey,
-                    "language": NSLocale.preferredLanguages.first ?? "en"
-                ]
-            )
-            
-            let apiDataNetwork = DefaultNetworkService(config: config)
-            self.dataTransferService = DefaultDataTransferService(with: apiDataNetwork)
-        }
+        self.dataTransferService = dataTransferService
         self.cache = cache
         self.backgroundQueue = backgroundQueue
     }

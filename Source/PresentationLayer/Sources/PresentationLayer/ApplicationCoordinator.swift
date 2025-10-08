@@ -19,9 +19,6 @@ public final class ApplicationCoordinator: Coordinating {
     // MARK: - Public
 
     @MainActor public func start(on window: WindowType,
-                                 moviesRepository: DomainLayer.MoviesRepository,
-                                 moviesQueriesRepository: DomainLayer.MoviesQueriesRepository,
-                                 posterImagesRepository: DomainLayer.PosterImagesRepository,
                                  appDIContainer: DomainLayer.DIContainerDomainLayerProtocol
     ) {
         self.window = window

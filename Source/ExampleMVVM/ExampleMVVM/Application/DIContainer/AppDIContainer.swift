@@ -10,7 +10,6 @@ public final class AppDIContainer: DIContainerDomainLayerProtocol {
         self.domainLayerDIContainer = DomainLayer.DIContainerDomainLayer(dataLayerDIContainer: DataLayer.DIContainerDataLayer())
     }
     
-    
     public func makeFetchRecentMovieQueriesUseCase() -> DomainLayer.FetchRecentMovieQueriesUseCase? {
         domainLayerDIContainer.makeFetchRecentMovieQueriesUseCase()
     }

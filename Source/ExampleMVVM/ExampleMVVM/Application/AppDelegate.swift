@@ -1,7 +1,6 @@
 import UIKit
 import PresentationLayer
 import DomainLayer
-import DataLayer
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -27,9 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        )
 //        appFlowCoordinator?.start()
         applicationCoordinator.start(on: window!,
-                                     moviesRepository: DataLayer.DefaultMoviesRepository(),
-                                     moviesQueriesRepository: DataLayer.DefaultMoviesQueriesRepository(moviesQueriesPersistentStorage: CoreDataMoviesQueriesStorage(maxStorageLimit: 10)),
-                                     posterImagesRepository: DataLayer.DefaultPosterImagesRepository(),
                                      appDIContainer: appDIContainer)
 //        window?.makeKeyAndVisible()
     
