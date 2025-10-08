@@ -21,7 +21,8 @@ public final class ApplicationCoordinator: Coordinating {
     @MainActor public func start(on window: WindowType,
                                  moviesRepository: DomainLayer.MoviesRepository,
                                  moviesQueriesRepository: DomainLayer.MoviesQueriesRepository,
-                                 posterImagesRepository: DomainLayer.PosterImagesRepository
+                                 posterImagesRepository: DomainLayer.PosterImagesRepository,
+                                 appDIContainer: DomainLayer.DIContainerDomainLayerProtocol
     ) {
         self.window = window
         let ccc = MoviesSearchCoordinator(parent: self)
@@ -29,7 +30,8 @@ public final class ApplicationCoordinator: Coordinating {
         ccc.start(on: window,
                   moviesRepository: moviesRepository,
                   moviesQueriesRepository: moviesQueriesRepository,
-                  posterImagesRepository: posterImagesRepository)
+                  posterImagesRepository: posterImagesRepository,
+        container: appDIContainer)
         window.makeKeyAndVisible()
     }
 }

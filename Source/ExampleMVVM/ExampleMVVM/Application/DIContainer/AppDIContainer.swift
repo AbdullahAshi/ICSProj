@@ -1,35 +1,23 @@
-//import Foundation
-//import DataLayer
-//
-//public final class AppDIContainer {
-//
-//    // MARK: - Network
-//    lazy var apiDataTransferService: DataTransferService = {
-//        let config = ApiDataNetworkConfig(
-//            baseURL: URL(string: AppConfiguration.apiBaseURL)!,
-//            queryParameters: [
-//                "api_key": AppConfiguration.apiKey,
-//                "language": NSLocale.preferredLanguages.first ?? "en"
-//            ]
-//        )
-//        
-//        let apiDataNetwork = DefaultNetworkService(config: config)
-//        return DefaultDataTransferService(with: apiDataNetwork)
-//    }()
-//    lazy var imageDataTransferService: DataTransferService = {
-//        let config = ApiDataNetworkConfig(
-//            baseURL: URL(string: AppConfiguration.imagesBaseURL)!
-//        )
-//        let imagesDataNetwork = DefaultNetworkService(config: config)
-//        return DefaultDataTransferService(with: imagesDataNetwork)
-//    }()
-//    
-//    // MARK: - DIContainers of scenes
-//    func makeMoviesSceneDIContainer() -> MoviesSceneDIContainer {
-//        let dependencies = MoviesSceneDIContainer.Dependencies(
-//            apiDataTransferService: apiDataTransferService,
-//            imageDataTransferService: imageDataTransferService
-//        )
-//        return MoviesSceneDIContainer(dependencies: dependencies)
-//    }
-//}
+import Foundation
+import Common
+import DataLayer
+import DomainLayer
+
+public final class AppDIContainer: DIContainerDomainLayerProtocol {
+    private let diContainer: Common.DIContainer
+    private let dataLayerDIContainer: DataLayer.DIContainerDataLayer
+    private let domainLayerDIContainer: DomainLayer.DIContainerDomainLayer
+
+    public init() {
+        self.diContainer = Common.DIContainer()
+        let tempDataLayerDIContainer = DataLayer.DIContainerDataLayer()
+        self.dataLayerDIContainer = tempDataLayerDIContainer
+        self.domainLayerDIContainer = DomainLayer.DIContainerDomainLayer(dataLayerDIContainer: tempDataLayerDIContainer)
+    }
+    
+    
+    public func makeFetchRecentMovieQueriesUseCase() -> DomainLayer.FetchRecentMovieQueriesUseCase? {
+        domainLayerDIContainer.makeFetchRecentMovieQueriesUseCase()
+    }
+    
+}
