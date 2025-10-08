@@ -25,13 +25,9 @@ public final class ApplicationCoordinator: Coordinating {
                                  appDIContainer: DomainLayer.DIContainerDomainLayerProtocol
     ) {
         self.window = window
-        let ccc = MoviesSearchCoordinator(parent: self)
-        addChild(ccc)
-        ccc.start(on: window,
-                  moviesRepository: moviesRepository,
-                  moviesQueriesRepository: moviesQueriesRepository,
-                  posterImagesRepository: posterImagesRepository,
-        container: appDIContainer)
+        let moviesSearchCoordinator = MoviesSearchCoordinator(parent: self)
+        addChild(moviesSearchCoordinator)
+        moviesSearchCoordinator.start(on: window, containerDomainLayer: appDIContainer)
         window.makeKeyAndVisible()
     }
 }

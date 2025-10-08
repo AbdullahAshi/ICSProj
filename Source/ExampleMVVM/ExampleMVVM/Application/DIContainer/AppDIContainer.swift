@@ -4,20 +4,27 @@ import DataLayer
 import DomainLayer
 
 public final class AppDIContainer: DIContainerDomainLayerProtocol {
-    private let diContainer: Common.DIContainer
-    private let dataLayerDIContainer: DataLayer.DIContainerDataLayer
-    private let domainLayerDIContainer: DomainLayer.DIContainerDomainLayer
+    private let domainLayerDIContainer: DomainLayer.DIContainerDomainLayerProtocol
 
     public init() {
-        self.diContainer = Common.DIContainer()
-        let tempDataLayerDIContainer = DataLayer.DIContainerDataLayer()
-        self.dataLayerDIContainer = tempDataLayerDIContainer
-        self.domainLayerDIContainer = DomainLayer.DIContainerDomainLayer(dataLayerDIContainer: tempDataLayerDIContainer)
+        self.domainLayerDIContainer = DomainLayer.DIContainerDomainLayer(dataLayerDIContainer: DataLayer.DIContainerDataLayer())
     }
     
     
     public func makeFetchRecentMovieQueriesUseCase() -> DomainLayer.FetchRecentMovieQueriesUseCase? {
         domainLayerDIContainer.makeFetchRecentMovieQueriesUseCase()
+    }
+    
+    public func makeSearchMoviesUseCase() -> (any DomainLayer.SearchMoviesUseCase)? {
+        domainLayerDIContainer.makeSearchMoviesUseCase()
+    }
+    
+    public func makePosterImagesRepository() -> any DomainLayer.PosterImagesRepository {
+        domainLayerDIContainer.makePosterImagesRepository()
+    }
+    
+    public func makeMoviesQueriesRepository() -> any DomainLayer.MoviesQueriesRepository {
+        domainLayerDIContainer.makeMoviesQueriesRepository()
     }
     
 }

@@ -17,6 +17,9 @@ public protocol DIContainerDataLayerProtocol {
 
 public protocol DIContainerDomainLayerProtocol {
     func makeFetchRecentMovieQueriesUseCase() -> FetchRecentMovieQueriesUseCase?
+    func makeSearchMoviesUseCase() -> SearchMoviesUseCase?
+    func makePosterImagesRepository() -> PosterImagesRepository
+    func makeMoviesQueriesRepository() -> MoviesQueriesRepository
 }
 
 // DIContainerDataLayer implementation
@@ -29,13 +32,9 @@ public final class DIContainerDomainLayer: DIContainerDomainLayerProtocol {
         self.dataLayerDIContainer = dataLayerDIContainer
         registerDependencies()
     }
-
-//    public func resolve<Service>(_ type: Service.Type) -> Service? {
-//        return diContainer.resolve(type)
-//    }
-
+    // MARK: - Dependency Registration
+    
     private func registerDependencies() {
-        // Example of registering dependencies
         diContainer.register(FetchRecentMovieQueriesUseCase.self, factory: {
             FetchRecentMovieQueriesUseCase(moviesQueriesRepository: self.dataLayerDIContainer.makeMoviesQueriesRepository())
         }, lifetime: .singleton)
@@ -44,8 +43,6 @@ public final class DIContainerDomainLayer: DIContainerDomainLayerProtocol {
             DefaultSearchMoviesUseCase(moviesRepository: self.dataLayerDIContainer.makeMoviesRepository(),
                                        moviesQueriesRepository: self.dataLayerDIContainer.makeMoviesQueriesRepository())
         }, lifetime: .transient)
-        
-        // Add more registrations as needed
     }
 
     // MARK: - Factory Methods
@@ -57,5 +54,13 @@ public final class DIContainerDomainLayer: DIContainerDomainLayerProtocol {
     
     public func makeSearchMoviesUseCase() -> SearchMoviesUseCase? {
         return diContainer.resolve(SearchMoviesUseCase.self)
+    }
+    
+    public func makePosterImagesRepository() -> PosterImagesRepository {
+        return dataLayerDIContainer.makePosterImagesRepository()
+    }
+    
+    public func makeMoviesQueriesRepository() -> MoviesQueriesRepository {
+        return dataLayerDIContainer.makeMoviesQueriesRepository()
     }
 }

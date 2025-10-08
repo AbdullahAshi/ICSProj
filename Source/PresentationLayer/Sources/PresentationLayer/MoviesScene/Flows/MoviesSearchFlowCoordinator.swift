@@ -62,30 +62,28 @@ public final class MoviesSearchCoordinator: Coordinating {
     // MARK: - Public
 
     @MainActor public func start(on window: WindowType,
-                                 moviesRepository: DomainLayer.MoviesRepository,
-                                 moviesQueriesRepository: DomainLayer.MoviesQueriesRepository,
-                                 posterImagesRepository: DomainLayer.PosterImagesRepository,
-                                 container: DomainLayer.DIContainerDomainLayerProtocol
+                                 containerDomainLayer: DomainLayer.DIContainerDomainLayerProtocol
     ) {
-        let defaultSearchMoviesUseCase = DefaultSearchMoviesUseCase(moviesRepository: moviesRepository,
-                                                                    moviesQueriesRepository: moviesQueriesRepository
-        )
+        guard let defaultSearchMoviesUseCase = containerDomainLayer.makeSearchMoviesUseCase() else { return }
         
         self.window = window
         let viewModel = DefaultMoviesListViewModel(searchMoviesUseCase: defaultSearchMoviesUseCase)
+        let posterImagesRepository = containerDomainLayer.makePosterImagesRepository()
         
         // Handle navigation events from ViewModel
         viewModel.navigationEvents
             .sink { [weak self] event in
-                self?.handleNavigationEvent(event, posterImagesRepository: posterImagesRepository, moviesQueriesRepository: moviesQueriesRepository)
+                self?.handleNavigationEvent(event,
+                                            posterImagesRepository: containerDomainLayer.makePosterImagesRepository(),
+                                            moviesQueriesRepository: containerDomainLayer.makeMoviesQueriesRepository())
             }
             .store(in: &cancellables)
         
-        let vc = MoviesListViewController.create(
+        let moviesListViewController = MoviesListViewController.create(
             with: viewModel,
             posterImagesRepository: posterImagesRepository
         )
-        navigationController.pushViewController(vc, animated: true)
+        navigationController.pushViewController(moviesListViewController, animated: true)
         self.window.rootViewController = self.navigationController
         window.makeKeyAndVisible()
     }
